@@ -1,0 +1,110 @@
+<?php
+
+// $Id$
+
+/**
+ * @file
+ * Theming functions.
+ */
+
+function theme_holidays_navigation($cal) {
+  global $year, $month;
+  
+  drupal_add_js (drupal_get_path('module', 'holidays_demo'). '/holidays_demo.theme.js');
+  drupal_add_css(drupal_get_path('module', 'holidays_demo'). '/holidays_demo.theme.css');
+  
+  $output .= "<table class='navigator-table' align='center'><tr>";
+
+  $output .= "<td>";
+  $output .= "<div class='title'>". $cal->title() ."</div>";
+  $output .= "<div class='navigator-today'>";
+  $today = getdate(time());
+  $output .= _holidays_build_link(t('Back to today'), $today['year'], $today['mon']);
+  $output .= "</div>";
+  $output .= "</td>";
+
+  $output .= "<td>";
+
+  $output .= "<div class='navigator'>";  
+  $output .= _holidays_build_link(t('Previous year'), $year - 1, $month, _holidays_back_arrow($cal));
+  $output .= ' '. _holidays_get_year_selector() .' ';
+  $output .= _holidays_build_link(t('Next year'), $year + 1, $month, _holidays_forward_arrow($cal));
+  $output .= "</div>"; // <!-- .navigator -->
+
+  $output .= "<div class='navigator'>";
+  $output .= _holidays_build_link(t('Previous month'), $year, $month - 1, _holidays_back_arrow($cal));
+  $output .= ' '. _holidays_get_month_selector() .' ';
+  $output .= _holidays_build_link(t('Next month'), $year, $month + 1, _holidays_forward_arrow($cal));
+  $output .= "</div>"; // <!-- .navigator -->
+
+  $start_date_str = $cal->getLongDate(array('year'=>$year, 'mon'=>$month, 'mday'=>1));
+  $end_date_str   = $cal->getLongDate(array('year'=>$year, 'mon'=>$month, 'mday'=>cal_days_in_month(CAL_GREGORIAN, $month, $year)));
+
+  $output .= "<div class='calendar-range'>";
+  $output .= "$start_date_str &#x2013; $end_date_str";
+  $output .= "</div>";
+
+  $output .= "</td>";
+  $output .= "</table>";
+  
+  return $output;
+}
+
+function _holidays_get_year_selector() {
+  global $year, $month;
+  $output = '<select id="year-selector">';
+  foreach (range($year - 70, $year + 70) as $y) {
+    $selected = ($y == $year) ? 'selected' : '';
+    $output .= "<option value='$y' $selected>$y</option>";
+  }
+  $output .= '</select>';
+  return $output;
+}
+
+function _holidays_get_month_selector() {
+  global $year, $month;
+  $output = '<select id="month-selector">';
+  foreach (range(1, 12) as $m) {
+    $selected = ($m == $month) ? 'selected' : '';
+    $output .= "<option value='$m' $selected>". map_month($m) ."</option>";
+  }
+  $output .= '</select>';
+  return $output;
+}
+
+function _holidays_build_url($year, $month) {
+  $url = request_uri();
+  if ($month == 13) {
+    ++$year;
+    $month = 1;
+  }
+  if ($month == 0) {
+    --$year;
+    $month = 12;
+  }
+  if (strstr($url, 'year=')) {
+    $url = preg_replace('/(?<=year=)(\d+)/', $year, $url);
+    $url = preg_replace('/(?<=month=)(\d+)/', $month, $url);
+  } else {
+    $url .= strstr($url, '?') ? '&' : '?';
+    $url .= "year=$year&month=$month";
+  }
+  return $url;
+}
+
+function _holidays_build_link($text, $year, $month, $img = NULL) {
+  $url = _holidays_build_url($year, $month);
+  if ($img) {
+    $text = theme('image', drupal_get_path('module', 'holidays_demo') .'/'. $img, $text, $text);
+  }
+  return "<a href='$url'>$text</a>";
+}
+
+function _holidays_forward_arrow($cal) {
+  return _holidays_calculate_dir($cal) == 'ltr' ? 'right.gif' : 'left.gif';
+}
+
+function _holidays_back_arrow($cal) {
+  return  _holidays_calculate_dir($cal) == 'ltr' ? 'left.gif' : 'right.gif';
+}
+

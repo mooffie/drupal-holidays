@@ -1,0 +1,3 @@
+; $Id$
+name = Holidays
+description = Provides API for other modules to support various calendar systems.

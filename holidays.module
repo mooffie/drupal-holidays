@@ -1,0 +1,48 @@
+<?php
+
+// $Id$
+
+/**
+ * @file
+ * The 'holidays' Drupal module. It's simply a wrapper that pulls in the library file.
+ */
+
+function holidays_factory($calendar_name, $settings = array()) {
+  static $cache = array();
+  global $locale;
+
+  if (!$settings && isset($cache[$calendar_name])) {
+    return $cache[$calendar_name];
+  }
+  else {
+    require_once dirname(__FILE__) . '/lib/NativeCalendar.php';
+    if (($cal = NativeCalendar::factory($calendar_name))) {
+      $cal->settings(_holidays_default_settings($calendar_name));
+      $cal->settings($settings);
+      // If we're to use the website's language, but this language happens to
+      // be the same as the calendar's native language, we instruct the calendar
+      // to use its built-in support for this [native] language.
+      //
+      // E.g., when we're running Drupal in the Hebrew locale, we want the
+      // Jewish calendar to use its built-in Hebrew support.
+      if ($cal->settings['language'] == CAL_LANG_FOREIGN && $locale == key($cal->native_language())) {
+        $cal->settings['language'] = CAL_LANG_NATIVE;
+      }
+      // We cache this object only if no customizations were supplied.
+      if (!$settings) {
+        $cache[$calendar_name] = $cal;
+      }
+      return $cal;
+    }
+  }
+}
+
+function holidays_get_calendars() {
+  require_once dirname(__FILE__) . '/lib/NativeCalendar.php';
+  return NativeCalendar::factory_list();
+}
+
+function _holidays_default_settings($calendar_name) {
+  // @todo Add admin section for editing default settings.
+  return array();
+}

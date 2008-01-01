@@ -1,0 +1,149 @@
+<?php
+
+// $Id$
+
+/**
+ * @file
+ * Demonstrates the Holidays module functionality by drawing a calendar.
+ */
+
+/**
+ * Implementation of hook_menu().
+ */
+function holidays_menu($may_cache) {
+  $items = array();
+  if ($may_cache) {
+    $items[] = array(
+      'path' => 'holidays',
+      'title' => t('Holidays module demonstration'),
+      'callback' => 'holidays_demo',
+      'access' => TRUE,
+      'type' => MENU_NORMAL_ITEM,
+    );
+  }
+  return $items;
+}
+
+// Builds the selection and settings form. Note that, for usability reasons, this
+// is a GET form. Since FAPI doens't process GET forms, we will have to so some
+// chores ourselves later on.
+function holidays_calendar_selection_form($cal) {
+  global $year, $month;
+  $form['calendar-selection'] = array(
+    '#type' => 'fieldset'
+  );
+  $form['calendar-selection']['calendar'] = array(
+    '#type' => 'select',
+    '#title' => t('Select the calendar'),
+    '#options' => holidays_get_calendars(),
+    '#default_value' => $cal->name,
+  );
+  $form['calendar-selection']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Update'),
+  );
+  if ($cal && ($settings_form = $cal->settings_form())) {
+    $form['calendar-selection']['settings'] = $settings_form;
+    $form['calendar-selection']['settings'] += array(
+      '#type' => 'fieldset',
+      '#title' => t('Settings for this calendar'),
+      '#collapsible' => TRUE,
+      '#collapsed' => FALSE,
+    );
+    $form['calendar-selection']['settings_are_for'] = array(
+      '#type' => 'hidden',
+      '#value' => $cal->name,
+    );
+  }
+  if (!variable_get('clean_url', '0')) {
+    $form['q'] = array(
+      '#type' => 'hidden',
+      '#value' => $_GET['q'],
+    );
+  }
+  $form['year'] = array(
+    '#type' => 'hidden',
+    '#value' => $year,
+  );
+  $form['month'] = array(
+    '#type' => 'hidden',
+    '#value' => $month,
+  );
+  $form['#method'] = 'GET';
+  $form['#process'] = array('_holidays_form_process' => array());
+  return $form;
+}
+
+// Makes the URL more aesthetic by removing some interval FAPI variables.
+function _holidays_form_process($form) {
+  unset($form['form_id']);
+  unset($form['form_token']);
+  return $form;
+}
+
+// Extracts the chosen calendar's settings from the URL.
+function _holidays_get_url_settings($cal) {
+  $settings = array();
+  if (isset($_GET['settings_are_for']) && $_GET['settings_are_for'] == $cal->name) {
+    // Settings are available in the URL.
+    foreach ($cal->settings_keys() as $name) {
+      if (isset($_GET[$name])) {
+        $settings[$name] = $_GET[$name];
+      } else {
+        // We assume a mising setting stands for an unchecked checkbox.
+        $settings[$name] = 0;
+      }
+    }
+  }
+  return $settings;
+}
+
+// The main function.
+function holidays_demo() {
+  global $year, $month;
+  $year  = isset($_GET['year'])  ? $_GET['year']  : NULL;
+  $month = isset($_GET['month']) ? $_GET['month'] : NULL;
+
+  $today = getdate(time());
+
+  if (!isset($year) || !isset($month)) {
+    $year  = $today['year'];
+    $month = $today['mon'];
+  }
+
+  drupal_add_css(drupal_get_path('module', 'holidays_demo'). '/holidays_demo.css');
+  require_once drupal_get_path('module', 'holidays_demo'). '/holidays_demo.theme';
+
+  if (empty($_GET['calendar'])) {
+    // Get the first one in the list
+    $list = holidays_get_calendars();
+    $_GET['calendar'] = current($list);
+  }
+
+  $cal = holidays_factory($_GET['calendar']);
+  if (!$cal) {
+    drupal_set_message(t("Cannot create calendar of type '%s'", array('%s' => $_GET['calendar'])), 'error');
+    return '';
+  }
+
+  $cal->settings(_holidays_get_url_settings($cal));
+
+  $output = drupal_get_form('holidays_calendar_selection_form', $cal);
+
+  $output .= '<div class="calendar '. _holidays_calculate_dir($cal) .'">';
+  $output .= theme('holidays_navigation', $cal);
+  $output .= $cal->printCal($year, $month);
+  $output .= '</div>';
+
+  return $output;
+}
+
+// Figures out the directionality of the table.
+function  _holidays_calculate_dir($cal) {
+  if ($cal->is_rtl() && $cal->settings['language'] == CAL_LANG_NATIVE) {
+    return 'rtl';
+  } else {
+    return 'ltr';
+  }
+}
+

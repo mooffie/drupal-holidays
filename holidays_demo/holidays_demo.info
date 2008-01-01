@@ -1,0 +1,4 @@
+; $Id$
+name = Holidays Demonstration
+description = "Prints a calendar at the ?q=holidays URL."
+dependencies = holidays
