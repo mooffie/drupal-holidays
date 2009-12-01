@@ -28,6 +28,8 @@ function holidays_menu($may_cache) {
 // is a GET form. Since FAPI doens't process GET forms, we will have to so some
 // chores ourselves later on.
 function holidays_calendar_selection_form($cal) {
+  // @todo: shouldn't we use #value instead of #default_value, including in $cal->settings_form() ?
+  // Because FAPI doesn't know *this* form was submitted.
   global $year, $month;
   $form['calendar-selection'] = array(
     '#type' => 'fieldset'

@@ -19,7 +19,8 @@ function holidays_factory($calendar_name, $settings = array()) {
     if (($cal = NativeCalendar::factory($calendar_name))) {
       $cal->settings(_holidays_default_settings($calendar_name));
       $cal->settings($settings);
-      // If we're to use the website's language, but this language happens to
+      $cal->set_timestamp_decoding_function('_holidays_decode_timestamp');
+      // If we're to use the website's language, and this language happens to
       // be the same as the calendar's native language, we instruct the calendar
       // to use its built-in support for this [native] language.
       //
@@ -45,4 +46,23 @@ function holidays_get_calendars() {
 function _holidays_default_settings($calendar_name) {
   // @todo Add admin section for editing default settings.
   return array();
+}
+
+/** 
+ * When a calendar is asked to convert a unix timestamp to a native date, 
+ * it first needs to convert the timestamp --which is given in UTC-- to local
+ * time. The following function is registered to perform this conversion.
+ */
+function _holidays_decode_timestamp($timestamp) {
+  // We could duplicate format_date()'s logic here, but it turns out it isn't a 
+  // significant performace hit to envelope it. Leaning on format_date() also 
+  // makes our code "forward-compatible" (think D7's timezones). Last but not 
+  // least: PHP's date handling functions would still require us to juggle with 
+  // strings.
+  $parts = split('-', format_date($timestamp, 'custom', 'Y-m-d'));
+  return array(
+    'year' => $parts[0],
+    'mon'  => $parts[1],
+    'mday' => $parts[2],
+  );
 }
