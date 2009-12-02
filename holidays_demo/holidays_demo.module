@@ -141,7 +141,7 @@ function holidays_demo() {
 
 // Figures out the directionality of the table.
 function  _holidays_calculate_dir($cal) {
-  if ($cal->is_rtl() && $cal->settings['language'] == CAL_LANG_NATIVE) {
+  if ($cal->is_rtl() && $cal->settings_get('language') == CAL_LANG_NATIVE) {
     return 'rtl';
   } else {
     return 'ltr';

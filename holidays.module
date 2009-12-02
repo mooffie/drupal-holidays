@@ -76,8 +76,8 @@ function holidays_factory($calendar_name, $settings = array()) {
       //
       // E.g., when we're running Drupal in the Hebrew locale, we want the
       // Jewish calendar to use its built-in Hebrew support.
-      if ($cal->settings['language'] == CAL_LANG_FOREIGN && $locale == key($cal->native_language())) {
-        $cal->settings['language'] = CAL_LANG_NATIVE;
+      if ($cal->settings_get('language') == CAL_LANG_FOREIGN && $locale == key($cal->native_language())) {
+        $cal->settings(array('language' => CAL_LANG_NATIVE));
       }
       // We cache this object only if no customizations were supplied.
       if (!$settings) {

@@ -37,7 +37,7 @@ function holidays_admin_calendar_form($calendar) {
 function holidays_admin_calendar_form_submit($form_id, $form_values) {
   $calendar = $form_values['the_calendar'];
   $calendar->settings_form_save($form_values);
-  variable_set('holidays_defaults_' . $calendar->name, $calendar->settings);
+  variable_set('holidays_defaults_' . $calendar->name, $calendar->settings_get());
   drupal_set_message(t('Defaults for %calendar-name saved.', array('%calendar-name' => $calendar->title())));
   return 'admin/settings/holidays';
 }
