@@ -87,7 +87,7 @@ function _holidays_get_url_settings($cal) {
   $settings = array();
   if (isset($_GET['settings_are_for']) && $_GET['settings_are_for'] == $cal->name) {
     // Settings are available in the URL.
-    foreach ($cal->settings_keys() as $name) {
+    foreach ($cal->settings_list() as $name) {
       if (isset($_GET[$name])) {
         $settings[$name] = $_GET[$name];
       } else {
