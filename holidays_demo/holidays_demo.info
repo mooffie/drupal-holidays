@@ -1,4 +1,5 @@
 ; $Id$
 name = Holidays Demonstration
 description = "Prints a wall calendar at the ?q=holidays URL."
-dependencies = holidays
+dependencies[] = holidays
+core = 6.x
