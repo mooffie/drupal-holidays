@@ -108,10 +108,15 @@ function _holidays_decode_timestamp($timestamp) {
   // makes our code "forward-compatible" (think D7's timezones). Last but not 
   // least: PHP's date handling functions would still require us to juggle with 
   // strings.
-  $parts = split('-', format_date($timestamp, 'custom', 'Y-m-d'));
+  $parts = split('-', format_date($timestamp, 'custom', 'Y-m-d-H-i-s'));
   return array(
     'year' => $parts[0],
     'mon'  => $parts[1],
     'mday' => $parts[2],
+    // Right now the calendar isn't using the following time fields, but in the
+    // future we may have a formatting function (a la getLongDate()) that prints it.
+    'hours'   => $parts[3],
+    'minutes' => $parts[4],
+    'seconds' => $parts[5],
   );
 }
