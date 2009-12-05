@@ -112,8 +112,8 @@ function holidays_demo() {
     $month = $today['mon'];
   }
 
-  drupal_add_css(drupal_get_path('module', 'holidays_demo'). '/holidays_demo.css');
-  require_once drupal_get_path('module', 'holidays_demo'). '/holidays_demo.theme';
+  drupal_add_css(drupal_get_path('module', 'holidays_demo') . '/holidays_demo.css');
+  require_once drupal_get_path('module', 'holidays_demo') . '/holidays_demo.theme';
 
   if (empty($_GET['calendar'])) {
     // Get the first one in the list
@@ -131,7 +131,7 @@ function holidays_demo() {
 
   $output = drupal_get_form('holidays_calendar_selection_form', $cal);
 
-  $output .= '<div class="calendar '. _holidays_calculate_dir($cal) .'">';
+  $output .= '<div class="calendar ' . _holidays_calculate_dir($cal) . '">';
   $output .= theme('holidays_navigation', $cal);
   $output .= $cal->printCal($year, $month);
   $output .= '</div>';

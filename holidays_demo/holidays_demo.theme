@@ -9,13 +9,13 @@
 function theme_holidays_navigation($cal) {
   global $year, $month;
   
-  drupal_add_js (drupal_get_path('module', 'holidays_demo'). '/holidays_demo.theme.js');
-  drupal_add_css(drupal_get_path('module', 'holidays_demo'). '/holidays_demo.theme.css');
+  drupal_add_js (drupal_get_path('module', 'holidays_demo') . '/holidays_demo.theme.js');
+  drupal_add_css(drupal_get_path('module', 'holidays_demo') . '/holidays_demo.theme.css');
   
   $output .= "<table class='navigator-table' align='center'><tr>";
 
   $output .= "<td>";
-  $output .= "<div class='title'>". $cal->title() ."</div>";
+  $output .= "<div class='title'>" . $cal->title() . "</div>";
   $output .= "<div class='navigator-today'>";
   $today = getdate(time());
   $output .= _holidays_build_link(t('Back to today'), $today['year'], $today['mon']);
@@ -26,13 +26,13 @@ function theme_holidays_navigation($cal) {
 
   $output .= "<div class='navigator'>";  
   $output .= _holidays_build_link(t('Previous year'), $year - 1, $month, _holidays_back_arrow($cal));
-  $output .= ' '. _holidays_get_year_selector() .' ';
+  $output .= ' ' . _holidays_get_year_selector() . ' ';
   $output .= _holidays_build_link(t('Next year'), $year + 1, $month, _holidays_forward_arrow($cal));
   $output .= "</div>"; // <!-- .navigator -->
 
   $output .= "<div class='navigator'>";
   $output .= _holidays_build_link(t('Previous month'), $year, $month - 1, _holidays_back_arrow($cal));
-  $output .= ' '. _holidays_get_month_selector() .' ';
+  $output .= ' ' . _holidays_get_month_selector() . ' ';
   $output .= _holidays_build_link(t('Next month'), $year, $month + 1, _holidays_forward_arrow($cal));
   $output .= "</div>"; // <!-- .navigator -->
 
@@ -65,7 +65,7 @@ function _holidays_get_month_selector() {
   $output = '<select id="month-selector">';
   foreach (range(1, 12) as $m) {
     $selected = ($m == $month) ? 'selected' : '';
-    $output .= "<option value='$m' $selected>". map_month($m) ."</option>";
+    $output .= "<option value='$m' $selected>" . map_month($m) . "</option>";
   }
   $output .= '</select>';
   return $output;
@@ -94,7 +94,7 @@ function _holidays_build_url($year, $month) {
 function _holidays_build_link($text, $year, $month, $img = NULL) {
   $url = _holidays_build_url($year, $month);
   if ($img) {
-    $text = theme('image', drupal_get_path('module', 'holidays_demo') .'/'. $img, $text, $text);
+    $text = theme('image', drupal_get_path('module', 'holidays_demo') . '/' . $img, $text, $text);
   }
   return "<a href='$url'>$text</a>";
 }
