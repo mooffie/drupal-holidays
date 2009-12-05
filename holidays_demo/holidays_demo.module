@@ -27,6 +27,12 @@ function holidays_demo_theme() {
       'template' => 'holidays-calendar-navigation',
       'arguments' => array('calendar' => NULL),
     ),
+    'holidays_year_selector' => array(
+      'arguments' => array('current_year' => NULL),
+    ),
+    'holidays_month_selector' => array(
+      'arguments' => array('current_month' => NULL),
+    ),
   );
 }
 

@@ -13,13 +13,13 @@
 <td>
   <div class="navigator">
     <?php print _holidays_build_link(t('Previous year'), $year - 1, $month, _holidays_back_arrow($calendar)); ?>
-    <?php print _holidays_get_year_selector(); ?>
+    <?php print theme('holidays_year_selector', $year); ?>
     <?php print _holidays_build_link(t('Next year'), $year + 1, $month, _holidays_forward_arrow($calendar)); ?>
   </div> <!-- .navigator -->
 
   <div class="navigator">
     <?php print _holidays_build_link(t('Previous month'), $year, $month - 1, _holidays_back_arrow($calendar)); ?>
-    <?php print _holidays_get_month_selector(); ?>
+    <?php print theme('holidays_month_selector', $month); ?>
     <?php print _holidays_build_link(t('Next month'), $year, $month + 1, _holidays_forward_arrow($calendar)); ?>
   </div> <!-- .navigator -->
 

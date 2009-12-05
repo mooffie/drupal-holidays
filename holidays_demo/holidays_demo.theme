@@ -20,22 +20,20 @@ function template_preprocess_holidays_calendar_navigation(&$variables) {
   $variables['last_date_shown']  = array('year' => $year, 'mon' => $month, 'mday' => cal_days_in_month(CAL_GREGORIAN, $month, $year));
 }
 
-function _holidays_get_year_selector() {
-  global $year, $month;
+function theme_holidays_year_selector($current_year) {
   $output = '<select id="year-selector">';
-  foreach (range($year - 70, $year + 70) as $y) {
-    $selected = ($y == $year) ? 'selected' : '';
+  foreach (range($current_year - 70, $current_year + 70) as $y) {
+    $selected = ($y == $current_year) ? 'selected' : '';
     $output .= "<option value='$y' $selected>$y</option>";
   }
   $output .= '</select>';
   return $output;
 }
 
-function _holidays_get_month_selector() {
-  global $year, $month;
+function theme_holidays_month_selector($current_month) {
   $output = '<select id="month-selector">';
   foreach (range(1, 12) as $m) {
-    $selected = ($m == $month) ? 'selected' : '';
+    $selected = ($m == $current_month) ? 'selected' : '';
     $output .= "<option value='$m' $selected>" . map_month($m) . "</option>";
   }
   $output .= '</select>';
