@@ -6,47 +6,18 @@
  * Theming functions.
  */
 
-function theme_holidays_navigation($cal) {
+/**
+ * Theme preprocess function for theme('holidays_calendar_navigation').
+ */
+function template_preprocess_holidays_calendar_navigation(&$variables) {
   global $year, $month;
-  
   drupal_add_js (drupal_get_path('module', 'holidays_demo') . '/holidays_demo.theme.js');
   drupal_add_css(drupal_get_path('module', 'holidays_demo') . '/holidays_demo.theme.css');
-  
-  $output .= "<table class='navigator-table' align='center'><tr>";
-
-  $output .= "<td>";
-  $output .= "<div class='title'>" . $cal->title() . "</div>";
-  $output .= "<div class='navigator-today'>";
-  $today = getdate(time());
-  $output .= _holidays_build_link(t('Back to today'), $today['year'], $today['mon']);
-  $output .= "</div>";
-  $output .= "</td>";
-
-  $output .= "<td>";
-
-  $output .= "<div class='navigator'>";  
-  $output .= _holidays_build_link(t('Previous year'), $year - 1, $month, _holidays_back_arrow($cal));
-  $output .= ' ' . _holidays_get_year_selector() . ' ';
-  $output .= _holidays_build_link(t('Next year'), $year + 1, $month, _holidays_forward_arrow($cal));
-  $output .= "</div>"; // <!-- .navigator -->
-
-  $output .= "<div class='navigator'>";
-  $output .= _holidays_build_link(t('Previous month'), $year, $month - 1, _holidays_back_arrow($cal));
-  $output .= ' ' . _holidays_get_month_selector() . ' ';
-  $output .= _holidays_build_link(t('Next month'), $year, $month + 1, _holidays_forward_arrow($cal));
-  $output .= "</div>"; // <!-- .navigator -->
-
-  $start_date_str = $cal->getLongDate(array('year'=>$year, 'mon'=>$month, 'mday'=>1));
-  $end_date_str   = $cal->getLongDate(array('year'=>$year, 'mon'=>$month, 'mday'=>cal_days_in_month(CAL_GREGORIAN, $month, $year)));
-
-  $output .= "<div class='calendar-range'>";
-  $output .= "$start_date_str &#x2013; $end_date_str";
-  $output .= "</div>";
-
-  $output .= "</td>";
-  $output .= "</table>";
-  
-  return $output;
+  $variables['today'] = getdate(time());
+  $variables['year']  = $year;
+  $variables['month'] = $month;
+  $variables['first_date_shown'] = array('year' => $year, 'mon' => $month, 'mday' => 1);
+  $variables['last_date_shown']  = array('year' => $year, 'mon' => $month, 'mday' => cal_days_in_month(CAL_GREGORIAN, $month, $year));
 }
 
 function _holidays_get_year_selector() {

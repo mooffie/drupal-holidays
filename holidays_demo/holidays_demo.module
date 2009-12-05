@@ -18,6 +18,18 @@ function holidays_demo_menu() {
   return $items;
 }
 
+/**
+ * Implementation of hook_theme().
+ */
+function holidays_demo_theme() {
+  return array(
+    'holidays_calendar_navigation' => array(
+      'template' => 'holidays-calendar-navigation',
+      'arguments' => array('calendar' => NULL),
+    ),
+  );
+}
+
 // Builds the selection and settings form. Note that, for usability reasons, this
 // is a GET form. Since FAPI doens't process GET forms, we will have to so some
 // chores ourselves later on.
@@ -127,8 +139,7 @@ function holidays_demo() {
   $output = drupal_get_form('holidays_calendar_selection_form', $cal);
 
   $output .= '<div class="calendar ' . _holidays_calculate_dir($cal) . '">';
-  //$output .= theme('holidays_navigation', $cal);
-  $output .= theme_holidays_navigation($cal);
+  $output .= theme('holidays_calendar_navigation', $cal);
   $output .= $cal->printCal($year, $month);
   $output .= '</div>';
 
