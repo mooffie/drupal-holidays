@@ -116,9 +116,9 @@ function holidays_demo() {
   require_once drupal_get_path('module', 'holidays_demo') . '/holidays_demo.theme';
 
   if (empty($_GET['calendar'])) {
-    // Get the first one in the list
-    $list = holidays_get_calendars();
-    $_GET['calendar'] = current($list);
+    // We use the Jewish calendar by default because, owing to its
+    // extensive settings form, it serves as a nicer demonstration.
+    $_GET['calendar'] = 'Jewish';
   }
 
   $cal = holidays_factory($_GET['calendar']);
