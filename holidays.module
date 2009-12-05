@@ -51,9 +51,9 @@ function holidays_perm() {
 function holidays_help($section) {
   switch ($section) {
     case 'admin/settings/holidays':
-      return t('The following calendars are installed on your system. Each calendar can be configured separately to suit your needs.');
+      return '<p>' . t('The following calendars are installed on your system. Each calendar can be configured separately to suit your needs.') . '</p>';
     case 'admin/settings/holidays/' . arg(3):
-      return t('You may edit the default settings for this calendar. When using the <a href="@api-page">calendaring API</a> directly (via PHP coding) any of these settings may be changed freely, but these defaults serve as the base.', array('@api-page' => 'http://drupal.org/node/XXXXX'));
+      return '<p>' . t('You may edit the default settings for this calendar. When using the <a href="@api-page">calendaring API</a> directly (via PHP coding) any of these settings may be changed freely, but these defaults serve as the base.', array('@api-page' => 'http://drupal.org/node/XXXXX')) . '</p>';
   }
 }
 
