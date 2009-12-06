@@ -4,7 +4,7 @@
 <table class="navigator-table" align="center"><tr>
 
 <td>
-  <div class="title"><?= $calendar->title() ?></div>
+  <div class="title"><?php print $calendar->title(); ?></div>
   <div class="navigator-today">
     <?php print _holidays_build_link(t('Back to today'), $today['year'], $today['mon']); ?>
   </div>

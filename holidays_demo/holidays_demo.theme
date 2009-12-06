@@ -76,3 +76,96 @@ function _holidays_back_arrow($cal) {
   return  _holidays_calculate_dir($cal) == 'ltr' ? 'left.gif' : 'right.gif';
 }
 
+/**
+ * Returns a nice HTML table showing one month in the calendar.
+ *
+ * This function is used for debugging. But you may use it for your 'end
+ * product' if you're lazy.
+ *
+ * Note that the month shown is Gregorian (that is, January, February, ...),
+ * therefore the parameters this function receives are the Gregorian year
+ * and month.
+ *
+ * You should include the 'demo-core.css' style sheet in your page for a
+ * pretty display.
+ *
+ * @param int $year
+ * @param int $month
+ */
+/**
+ * Theme preprocess function for theme('holidays_calendar_month').
+ */
+function template_preprocess_holidays_calendar_month(&$vars) {
+  $calendar =& $vars['calendar'];
+  $year     =  $vars['year'];
+  $month    =  $vars['month'];
+
+  $days_in_month = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+  $prev_dow      = 100; // Anything above 7.
+
+  if ($calendar->settings['language'] == CAL_LANG_FOREIGN) {
+    $vars['day_names'] = array(t('Sun'), t('Mon'), t('Tue'), t('Wed'), t('Thu'), t('Fri'), t('Sat'));
+  } else {
+    $vars['day_names'] = $calendar->getDaysOfWeek();
+  }
+
+  $rows = array();
+  $row = array();
+  for ($day = 1; $day <= $days_in_month; $day++)
+  {
+    $jdc = gregoriantojd($month, $day, $year);
+    $dow = jddayofweek($jdc, 0) + 1;
+
+    if ($dow < $prev_dow) {
+      // Starting a new week, so start a new row in table.
+      if ($day != 1) {
+        $rows[] = $row;
+        $row = array();
+      } else {
+        for ($i = 1; $i < $dow; $i++) {
+          $row[] = theme('holidays_calendar_day_void');
+        }
+      }
+    }
+    $row[] = theme('holidays_calendar_day', $calendar, $jdc);
+    $prev_dow = $dow;
+  }
+  for ($i = $dow + 1; $i <= 7; $i++) {
+    $row[] = theme('holidays_calendar_day_void');
+  }
+  $rows[] = $row;
+
+  $vars['rows'] = $rows;
+}
+
+/**
+ * Theme preprocess function for theme('holidays_calendar_day').
+ */
+function template_preprocess_holidays_calendar_day(&$vars) {
+  $calendar =& $vars['calendar'];
+  $jdc      =  $vars['jdc'];
+
+  $today_jdc = unixtojd(time());
+
+  $native_date = $calendar->convertToNative(array('jdc' => $jdc));
+  $holidays = $calendar->getHolidays($native_date);
+
+  $holiday_classes = array();
+  if ($holidays) {
+    foreach ($holidays as $hday) {
+      $holiday_classes[$hday['id']] = 1;
+      $holiday_classes[$hday['class']] = 1;
+    }
+  }
+  $vars['holiday_classes'] = implode(' ', array_keys($holiday_classes));
+  $vars['holidays'] = $holidays;
+  $vars['is_today'] = ($jdc == $today_jdc);
+  $vars['native_date'] = $native_date;
+  $gregorian = cal_from_jd($jdc, CAL_GREGORIAN);
+  $vars['gregorian_date'] = array(
+    // For conformity with the rest of our API, we want getdate()'s naming conventions.
+    'year' => $gregorian['year'],
+    'mon'  => $gregorian['month'],
+    'mday' => $gregorian['day'],
+  );
+}

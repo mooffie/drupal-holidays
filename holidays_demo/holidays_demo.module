@@ -27,6 +27,18 @@ function holidays_demo_theme() {
       'template' => 'holidays-calendar-navigation',
       'arguments' => array('calendar' => NULL),
     ),
+    'holidays_calendar_month' => array(
+      'template' => 'holidays-calendar-month',
+      'arguments' => array('calendar' => NULL, 'year' => NULL, 'month' => NULL),
+    ),
+    'holidays_calendar_day_void' => array(
+      'template' => 'holidays-calendar-day-void',
+      'arguments' => array(),
+    ),
+    'holidays_calendar_day' => array(
+      'template' => 'holidays-calendar-day',
+      'arguments' => array('calendar' => NULL, 'jdc' => NULL),
+    ),
     'holidays_year_selector' => array(
       'arguments' => array('current_year' => NULL),
     ),
@@ -146,7 +158,7 @@ function holidays_demo() {
 
   $output .= '<div class="calendar ' . _holidays_calculate_dir($cal) . '">';
   $output .= theme('holidays_calendar_navigation', $cal);
-  $output .= $cal->printCal($year, $month);
+  $output .= theme('holidays_calendar_month', $cal, $year, $month);
   $output .= '</div>';
 
   return $output;
