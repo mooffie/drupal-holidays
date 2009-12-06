@@ -7,17 +7,20 @@
  */
 
 /**
- * Theme preprocess function for theme('holidays_calendar_navigation').
+ * Process variables for holidays-calendar-navigation.tpl.php
+ *
+ * The $vars array contains the following arguments:
+ * - $calendar
  */
-function template_preprocess_holidays_calendar_navigation(&$variables) {
+function template_preprocess_holidays_calendar_navigation(&$vars) {
   global $year, $month;
   drupal_add_js (drupal_get_path('module', 'holidays_demo') . '/holidays_demo.theme.js');
   drupal_add_css(drupal_get_path('module', 'holidays_demo') . '/holidays_demo.theme.css');
-  $variables['today'] = getdate(time());
-  $variables['year']  = $year;
-  $variables['month'] = $month;
-  $variables['first_date_shown'] = array('year' => $year, 'mon' => $month, 'mday' => 1);
-  $variables['last_date_shown']  = array('year' => $year, 'mon' => $month, 'mday' => cal_days_in_month(CAL_GREGORIAN, $month, $year));
+  $vars['today'] = getdate(time());
+  $vars['year']  = $year;
+  $vars['month'] = $month;
+  $vars['first_date_shown'] = array('year' => $year, 'mon' => $month, 'mday' => 1);
+  $vars['last_date_shown']  = array('year' => $year, 'mon' => $month, 'mday' => cal_days_in_month(CAL_GREGORIAN, $month, $year));
 }
 
 function theme_holidays_year_selector($current_year) {
@@ -77,23 +80,16 @@ function _holidays_back_arrow($cal) {
 }
 
 /**
- * Returns a nice HTML table showing one month in the calendar.
- *
- * This function is used for debugging. But you may use it for your 'end
- * product' if you're lazy.
- *
- * Note that the month shown is Gregorian (that is, January, February, ...),
- * therefore the parameters this function receives are the Gregorian year
- * and month.
- *
  * You should include the 'demo-core.css' style sheet in your page for a
  * pretty display.
- *
- * @param int $year
- * @param int $month
  */
 /**
- * Theme preprocess function for theme('holidays_calendar_month').
+ * Process variables for holidays-calendar-month.tpl.php
+ *
+ * The $vars array contains the following arguments:
+ * - $calendar
+ * - $year: The Gregorian year displayed.
+ * - $month: The Gregorian month displayed.
  */
 function template_preprocess_holidays_calendar_month(&$vars) {
   $calendar =& $vars['calendar'];
@@ -139,7 +135,11 @@ function template_preprocess_holidays_calendar_month(&$vars) {
 }
 
 /**
- * Theme preprocess function for theme('holidays_calendar_day').
+ * Process variables for holidays-calendar-day.tpl.php
+ *
+ * The $vars array contains the following arguments:
+ * - $calendar
+ * - $jdc: The date of the day displayed, as a Julian day count.
  */
 function template_preprocess_holidays_calendar_day(&$vars) {
   $calendar =& $vars['calendar'];

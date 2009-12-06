@@ -1,5 +1,19 @@
 <?php
-// @todo: document the variables.
+// $Id$
+/**
+ * @file
+ * Template to display the navigation links in a calendar.
+ *
+ * Available variables:
+ * - $calendar: The calendar object.
+ * - $year: The Gregorian year displayed.
+ * - $month: The Gregorian month displayed.
+ * - $today: Today's date.
+ * - $first_date_shown: The date of the first day of the month displayed.
+ * - $last_date_shown: The date of the last day of the month displayed.
+ *
+ * @see template_preprocess_holidays_calendar_navigation()
+ */
 ?>
 <table class="navigator-table" align="center"><tr>
 

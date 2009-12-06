@@ -1,3 +1,20 @@
+<?php
+// $Id$
+/**
+ * @file
+ * Template to display a day. That is, a single cell in a month view.
+ *
+ * Available variables:
+ * - $calendar: The calendar object.
+ * - $gregorian_date: The Gregorian date of this day.
+ * - $native_date: The native date of this day.
+ * - $holidays: An array of information about each holiday falling on this day.
+ * - $holidays_classes: A list of the IDs of the holidays; suitable for a 'class' attribute.
+ * - $is_today: Whether the day displayed is today.
+ *
+ * @see template_preprocess_holidays_calendar_day()
+ */
+?>
 <td class="day <?php print $holiday_classes; ?> <?php if ($is_today) print 'today'; ?> ">
 <span class="gregorian-number"><?php print $gregorian_date['mday']; ?></span>
 <span class="native-number"><?php print $calendar->getNumber($native_date['mday']); ?>
