@@ -24,29 +24,36 @@ function holidays_demo_menu() {
 function holidays_demo_theme() {
   return array(
     'holidays_calendar_main' => array(
+      'file' => 'holidays_demo.theme',
       'template' => 'holidays-calendar-main',
       'arguments' => array('calendar' => NULL, 'year' => NULL, 'month' => NULL, 'settings_form' => NULL),
     ),
     'holidays_calendar_navigation' => array(
+      'file' => 'holidays_demo.theme',
       'template' => 'holidays-calendar-navigation',
       'arguments' => array('calendar' => NULL),
     ),
     'holidays_calendar_month' => array(
+      'file' => 'holidays_demo.theme',
       'template' => 'holidays-calendar-month',
       'arguments' => array('calendar' => NULL, 'year' => NULL, 'month' => NULL),
     ),
     'holidays_calendar_day_void' => array(
+      'file' => 'holidays_demo.theme',
       'template' => 'holidays-calendar-day-void',
       'arguments' => array(),
     ),
     'holidays_calendar_day' => array(
+      'file' => 'holidays_demo.theme',
       'template' => 'holidays-calendar-day',
       'arguments' => array('calendar' => NULL, 'jdc' => NULL),
     ),
     'holidays_year_selector' => array(
+      'file' => 'holidays_demo.theme',
       'arguments' => array('current_year' => NULL),
     ),
     'holidays_month_selector' => array(
+      'file' => 'holidays_demo.theme',
       'arguments' => array('current_month' => NULL),
     ),
   );
@@ -142,7 +149,6 @@ function holidays_demo() {
   }
 
   drupal_add_css(drupal_get_path('module', 'holidays_demo') . '/holidays_demo.css');
-  require_once drupal_get_path('module', 'holidays_demo') . '/holidays_demo.theme';
 
   if (empty($_GET['calendar'])) {
     // We use the Jewish calendar by default because, owing to its
@@ -162,13 +168,3 @@ function holidays_demo() {
 
   return theme('holidays_calendar_main', $cal, $year, $month, $settings_form);
 }
-
-// Figures out the directionality of the table.
-function  _holidays_calculate_dir($cal) {
-  if ($cal->is_rtl() && $cal->settings_get('language') == CAL_LANG_NATIVE) {
-    return 'rtl';
-  } else {
-    return 'ltr';
-  }
-}
-

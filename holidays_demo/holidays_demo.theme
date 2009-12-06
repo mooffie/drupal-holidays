@@ -169,3 +169,12 @@ function template_preprocess_holidays_calendar_day(&$vars) {
     'mday' => $gregorian['day'],
   );
 }
+
+// Figures out the directionality of the table.
+function  _holidays_calculate_dir($calendar) {
+  if ($calendar->is_rtl() && $calendar->settings_get('language') == CAL_LANG_NATIVE) {
+    return 'rtl';
+  } else {
+    return 'ltr';
+  }
+}
