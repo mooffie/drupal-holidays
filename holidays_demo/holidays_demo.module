@@ -23,6 +23,10 @@ function holidays_demo_menu() {
  */
 function holidays_demo_theme() {
   return array(
+    'holidays_calendar_main' => array(
+      'template' => 'holidays-calendar-main',
+      'arguments' => array('calendar' => NULL, 'year' => NULL, 'month' => NULL, 'settings_form' => NULL),
+    ),
     'holidays_calendar_navigation' => array(
       'template' => 'holidays-calendar-navigation',
       'arguments' => array('calendar' => NULL),
@@ -154,14 +158,9 @@ function holidays_demo() {
 
   $cal->settings(_holidays_get_url_settings($cal));
 
-  $output = drupal_get_form('holidays_calendar_selection_form', $cal);
+  $settings_form = drupal_get_form('holidays_calendar_selection_form', $cal);
 
-  $output .= '<div class="calendar ' . _holidays_calculate_dir($cal) . '">';
-  $output .= theme('holidays_calendar_navigation', $cal);
-  $output .= theme('holidays_calendar_month', $cal, $year, $month);
-  $output .= '</div>';
-
-  return $output;
+  return theme('holidays_calendar_main', $cal, $year, $month, $settings_form);
 }
 
 // Figures out the directionality of the table.
