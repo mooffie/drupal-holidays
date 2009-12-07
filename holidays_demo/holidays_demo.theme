@@ -11,14 +11,15 @@
  *
  * The $vars array contains the following arguments:
  * - $calendar
+ * - $year: The Gregorian year displayed.
+ * - $month: The Gregorian month displayed.
  */
 function template_preprocess_holidays_calendar_navigation(&$vars) {
-  global $year, $month;
   drupal_add_js (drupal_get_path('module', 'holidays_demo') . '/holidays_demo.theme.js');
   drupal_add_css(drupal_get_path('module', 'holidays_demo') . '/holidays_demo.theme.css');
   $vars['today'] = getdate(time());
-  $vars['year']  = $year;
-  $vars['month'] = $month;
+  $year  = $vars['year'];
+  $month = $vars['month'];
   $vars['first_date_shown'] = array('year' => $year, 'mon' => $month, 'mday' => 1);
   $vars['last_date_shown']  = array('year' => $year, 'mon' => $month, 'mday' => cal_days_in_month(CAL_GREGORIAN, $month, $year));
 }

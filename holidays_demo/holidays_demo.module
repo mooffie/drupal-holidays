@@ -31,22 +31,22 @@ function holidays_demo_theme() {
     'holidays_calendar_navigation' => array(
       'file' => 'holidays_demo.theme',
       'template' => 'holidays-calendar-navigation',
-      'arguments' => array('calendar' => NULL),
+      'arguments' => array('calendar' => NULL, 'year' => NULL, 'month' => NULL),
     ),
     'holidays_calendar_month' => array(
       'file' => 'holidays_demo.theme',
       'template' => 'holidays-calendar-month',
       'arguments' => array('calendar' => NULL, 'year' => NULL, 'month' => NULL),
     ),
-    'holidays_calendar_day_void' => array(
-      'file' => 'holidays_demo.theme',
-      'template' => 'holidays-calendar-day-void',
-      'arguments' => array(),
-    ),
     'holidays_calendar_day' => array(
       'file' => 'holidays_demo.theme',
       'template' => 'holidays-calendar-day',
       'arguments' => array('calendar' => NULL, 'jdc' => NULL),
+    ),
+    'holidays_calendar_day_void' => array(
+      'file' => 'holidays_demo.theme',
+      'template' => 'holidays-calendar-day-void',
+      'arguments' => array(),
     ),
     'holidays_year_selector' => array(
       'file' => 'holidays_demo.theme',
@@ -62,10 +62,9 @@ function holidays_demo_theme() {
 // Builds the selection and settings form. Note that, for usability reasons, this
 // is a GET form. Since FAPI doens't process GET forms, we will have to so some
 // chores ourselves later on.
-function holidays_calendar_selection_form(&$form_state, $cal) {
+function holidays_calendar_selection_form(&$form_state, $cal, $year, $month) {
   // @todo: shouldn't we use #value instead of #default_value, including in $cal->settings_form() ?
   // Because FAPI doesn't know *this* form was submitted.
-  global $year, $month;
   $form['calendar-selection'] = array(
     '#type' => 'fieldset'
   );
@@ -137,7 +136,6 @@ function _holidays_get_url_settings($cal) {
 
 // The main function.
 function holidays_demo() {
-  global $year, $month;
   $year  = isset($_GET['year'])  ? $_GET['year']  : NULL;
   $month = isset($_GET['month']) ? $_GET['month'] : NULL;
 
@@ -164,7 +162,7 @@ function holidays_demo() {
 
   $cal->settings(_holidays_get_url_settings($cal));
 
-  $settings_form = drupal_get_form('holidays_calendar_selection_form', $cal);
+  $settings_form = drupal_get_form('holidays_calendar_selection_form', $cal, $year, $month);
 
   return theme('holidays_calendar_main', $cal, $year, $month, $settings_form);
 }
