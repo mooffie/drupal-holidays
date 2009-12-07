@@ -17,11 +17,11 @@
 function template_preprocess_holidays_calendar_navigation(&$vars) {
   drupal_add_js (drupal_get_path('module', 'holidays_demo') . '/holidays_demo.theme.js');
   drupal_add_css(drupal_get_path('module', 'holidays_demo') . '/holidays_demo.theme.css');
-  $vars['today'] = getdate(time());
   $year  = $vars['year'];
   $month = $vars['month'];
   $vars['first_date_shown'] = array('year' => $year, 'mon' => $month, 'mday' => 1);
   $vars['last_date_shown']  = array('year' => $year, 'mon' => $month, 'mday' => cal_days_in_month(CAL_GREGORIAN, $month, $year));
+  $vars['today'] = $vars['calendar']->get_todays_date_as_gregorian();
 }
 
 function theme_holidays_year_selector($current_year) {
@@ -146,8 +146,7 @@ function template_preprocess_holidays_calendar_day(&$vars) {
   $calendar =& $vars['calendar'];
   $jdc      =  $vars['jdc'];
 
-  $today_jdc = unixtojd(time());
-
+  $todays_jdc = $calendar->get_todays_date_as_jdc();
   $native_date = $calendar->convertToNative(array('jdc' => $jdc));
   $holidays = $calendar->getHolidays($native_date);
 
@@ -160,7 +159,7 @@ function template_preprocess_holidays_calendar_day(&$vars) {
   }
   $vars['holiday_classes'] = implode(' ', array_keys($holiday_classes));
   $vars['holidays'] = $holidays;
-  $vars['is_today'] = ($jdc == $today_jdc);
+  $vars['is_today'] = ($jdc == $todays_jdc);
   $vars['native_date'] = $native_date;
   $gregorian = cal_from_jd($jdc, CAL_GREGORIAN);
   $vars['gregorian_date'] = array(
