@@ -59,12 +59,10 @@ function holidays_demo_theme() {
   );
 }
 
-// Builds the selection and settings form. Note that, for usability reasons, this
-// is a GET form. Since FAPI doens't process GET forms, we will have to so some
-// chores ourselves later on.
+// Builds the selection and settings form. We want to allow people to link to
+// various months in the celendar so we make this a GET form. Since FAPI doesn't
+// process GET forms, we will have to so some chores ourselves later on.
 function holidays_calendar_selection_form(&$form_state, $cal, $year, $month) {
-  // @todo: shouldn't we use #value instead of #default_value, including in $cal->settings_form() ?
-  // Because FAPI doesn't know *this* form was submitted.
   $form['calendar-selection'] = array(
     '#type' => 'fieldset'
   );
