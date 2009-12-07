@@ -151,7 +151,38 @@ function holidays_demo() {
   $year  = !empty($_GET['year'])  ? $_GET['year']  : $today['year'];
   $month = !empty($_GET['month']) ? $_GET['month'] : $today['mon'];
 
-  $settings_form = drupal_get_form('holidays_calendar_selection_form', $cal, $year, $month);
+  if (!empty($_GET['feed'])) {
+    header('Content-Type: text/calendar; charset=utf-8');
+    header('Content-Disposition: attachment; filename="calendar.ics";');
+    print holidays_demo_ical_feed($cal, $year, $month);
+    exit();
+  }
+  else {
+    $settings_form = drupal_get_form('holidays_calendar_selection_form', $cal, $year, $month);
+    return theme('holidays_calendar_main', $cal, $year, $month, $settings_form);
+  }
+}
 
-  return theme('holidays_calendar_main', $cal, $year, $month, $settings_form);
+// @todo: There's not yet a link that triggers this ical feed.
+function holidays_demo_ical_feed($cal, $year, $month, $years_count = 2 /* two years ahead */) {
+  $output  = "BEGIN:VCALENDAR\nVERSION:2.0\n";
+  $output .= 'X-WR-CALNAME:' . $cal->ical_title() . "\n";
+  $jdc = gregoriantojd($month, 1, $year);
+  for ($n = $years_count * 365; $n--; ) {
+    $holidays = $cal->getHolidays(array('jdc' => $jdc));
+    if ($holidays) {
+      $gregorian = cal_from_jd($jdc, CAL_GREGORIAN);
+      $gregorian_str = sprintf('%04d%02d%02d',
+          $gregorian['year'], $gregorian['month'], $gregorian['day']);
+      foreach ($holidays as $holiday) {
+        $output .= "BEGIN:VEVENT\n";
+        $output .= "DTSTART;VALUE=DATE:$gregorian_str\n";
+        $output .= "SUMMARY:$holiday[name]\n";
+        $output .= "END:VEVENT\n";
+      }
+    }
+    $jdc++;
+  }
+  $output .= "END:VCALENDAR\n";
+  return $output;
 }
