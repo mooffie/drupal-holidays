@@ -17,7 +17,7 @@ function theme_holidays_navigation($cal) {
   $output .= "<td>";
   $output .= "<div class='title'>" . $cal->title() . "</div>";
   $output .= "<div class='navigator-today'>";
-  $today = getdate(time());
+  $today = $cal->get_todays_date_as_gregorian();
   $output .= _holidays_build_link(t('Back to today'), $today['year'], $today['mon']);
   $output .= "</div>";
   $output .= "</td>";

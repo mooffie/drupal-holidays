@@ -102,15 +102,6 @@ function _holidays_get_url_settings($cal) {
 // The main function.
 function holidays_demo() {
   global $year, $month;
-  $year  = isset($_GET['year'])  ? $_GET['year']  : NULL;
-  $month = isset($_GET['month']) ? $_GET['month'] : NULL;
-
-  $today = getdate(time());
-
-  if (!isset($year) || !isset($month)) {
-    $year  = $today['year'];
-    $month = $today['mon'];
-  }
 
   drupal_add_css(drupal_get_path('module', 'holidays_demo') . '/holidays_demo.css');
   require_once drupal_get_path('module', 'holidays_demo') . '/holidays_demo.theme';
@@ -120,14 +111,15 @@ function holidays_demo() {
     // extensive settings form, it serves as a nicer demonstration.
     $_GET['calendar'] = 'Jewish';
   }
-
-  $cal = holidays_factory($_GET['calendar']);
-  if (!$cal) {
+  if (!($cal = holidays_factory($_GET['calendar']))) {
     drupal_set_message(t("Cannot create calendar of type '%s'", array('%s' => $_GET['calendar'])), 'error');
     return '';
   }
-
   $cal->settings(_holidays_get_url_settings($cal));
+
+  $today = $cal->get_todays_date_as_gregorian();
+  $year  = !empty($_GET['year'])  ? $_GET['year']  : $today['year'];
+  $month = !empty($_GET['month']) ? $_GET['month'] : $today['mon'];
 
   $output = drupal_get_form('holidays_calendar_selection_form', $cal);
 
