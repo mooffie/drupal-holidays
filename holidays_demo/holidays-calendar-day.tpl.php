@@ -11,6 +11,7 @@
  * - $holidays: An array of information about each holiday falling on this day.
  * - $holidays_classes: A list of the IDs of the holidays; suitable for a 'class' attribute.
  * - $is_today: Whether the day displayed is today.
+ * - $data: Additional markup 3'rd party modules may inject.
  *
  * @see template_preprocess_holidays_calendar_day()
  */
@@ -25,4 +26,5 @@
 <?php foreach ($holidays as $holiday): ?>
 <div class="holiday-name"><?php print $holiday['name']; ?></div>
 <?php endforeach; ?>
+<?php print $data; ?>
 </td>

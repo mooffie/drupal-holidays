@@ -168,6 +168,8 @@ function template_preprocess_holidays_calendar_day(&$vars) {
     'mon'  => $gregorian['month'],
     'mday' => $gregorian['day'],
   );
+  // Modules may inject their own data (using their own preprocess hooks) into the day:
+  $vars['data'] = '';
 }
 
 // Figures out the directionality of the table.
