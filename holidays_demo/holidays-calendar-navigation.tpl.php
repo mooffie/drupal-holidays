@@ -15,7 +15,18 @@
  * @see template_preprocess_holidays_calendar_navigation()
  */
 ?>
-<table class="navigator-table" align="center"><tr>
+<?php
+// @todo: specify these images in the CSS instead.
+if (_holidays_calculate_directionality($calendar) == 'ltr') {
+  $backward_arrow = 'left.gif';
+  $forward_arrow  = 'right.gif';
+} else {
+  $backward_arrow = 'right.gif';
+  $forward_arrow  = 'left.gif';
+}
+?>
+<table class="navigator-table" align="center">
+<tr>
 
 <td>
   <div class="title"><?php print $calendar->title(); ?></div>
@@ -26,16 +37,16 @@
 
 <td>
   <div class="navigator">
-    <?php print _holidays_build_link(t('Previous year'), $year - 1, $month, _holidays_back_arrow($calendar)); ?>
+    <?php print _holidays_build_link(t('Previous year'), $year - 1, $month, $backward_arrow); ?>
     <?php print theme('holidays_year_selector', $year); ?>
-    <?php print _holidays_build_link(t('Next year'), $year + 1, $month, _holidays_forward_arrow($calendar)); ?>
-  </div> <!-- .navigator -->
+    <?php print _holidays_build_link(t('Next year'), $year + 1, $month, $forward_arrow); ?>
+  </div>
 
   <div class="navigator">
-    <?php print _holidays_build_link(t('Previous month'), $year, $month - 1, _holidays_back_arrow($calendar)); ?>
+    <?php print _holidays_build_link(t('Previous month'), $year, $month - 1, $backward_arrow); ?>
     <?php print theme('holidays_month_selector', $month); ?>
-    <?php print _holidays_build_link(t('Next month'), $year, $month + 1, _holidays_forward_arrow($calendar)); ?>
-  </div> <!-- .navigator -->
+    <?php print _holidays_build_link(t('Next month'), $year, $month + 1, $forward_arrow); ?>
+  </div>
 
   <div class="calendar-range">
    <?php print $calendar->getLongDate($first_date_shown); ?> &#x2013; <?php print $calendar->getLongDate($last_date_shown); ?>

@@ -72,14 +72,6 @@ function _holidays_build_link($text, $year, $month, $img = NULL) {
   return "<a href='$url'>$text</a>";
 }
 
-function _holidays_forward_arrow($cal) {
-  return _holidays_calculate_dir($cal) == 'ltr' ? 'right.gif' : 'left.gif';
-}
-
-function _holidays_back_arrow($cal) {
-  return  _holidays_calculate_dir($cal) == 'ltr' ? 'left.gif' : 'right.gif';
-}
-
 /**
  * You should include the 'demo-core.css' style sheet in your page for a
  * pretty display.
@@ -172,8 +164,8 @@ function template_preprocess_holidays_calendar_day(&$vars) {
   $vars['data'] = '';
 }
 
-// Figures out the directionality of the table.
-function  _holidays_calculate_dir($calendar) {
+// Figures out the directionality of the layout.
+function  _holidays_calculate_directionality($calendar) {
   if ($calendar->is_rtl() && $calendar->settings_get('language') == CAL_LANG_NATIVE) {
     return 'rtl';
   } else {
