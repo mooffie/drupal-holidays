@@ -26,7 +26,7 @@ function holidays_demo_menu($may_cache) {
 // Builds the selection and settings form. We want to allow people to link to
 // various months in the celendar so we make this a GET form. Since FAPI doesn't
 // process GET forms, we will have to so some chores ourselves later on.
-function holidays_calendar_selection_form($cal) {
+function holidays_calendar_selection_form($calendar) {
   global $year, $month;
   $form['calendar-selection'] = array(
     '#type' => 'fieldset'
@@ -35,13 +35,13 @@ function holidays_calendar_selection_form($cal) {
     '#type' => 'select',
     '#title' => t('Select the calendar'),
     '#options' => holidays_get_calendars(),
-    '#default_value' => $cal->name,
+    '#default_value' => $calendar->name,
   );
   $form['calendar-selection']['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Update'),
   );
-  if ($cal && ($settings_form = $cal->settings_form())) {
+  if ($calendar && ($settings_form = $calendar->settings_form())) {
     $form['calendar-selection']['settings'] = $settings_form;
     $form['calendar-selection']['settings'] += array(
       '#type' => 'fieldset',
@@ -51,7 +51,7 @@ function holidays_calendar_selection_form($cal) {
     );
     $form['calendar-selection']['settings_are_for'] = array(
       '#type' => 'hidden',
-      '#value' => $cal->name,
+      '#value' => $calendar->name,
     );
   }
   if (!variable_get('clean_url', '0')) {
@@ -81,11 +81,10 @@ function _holidays_form_process($form) {
 }
 
 // Extracts the chosen calendar's settings from the URL.
-function _holidays_get_url_settings($cal) {
+function _holidays_get_url_settings($calendar) {
   $settings = array();
-  if (isset($_GET['settings_are_for']) && $_GET['settings_are_for'] == $cal->name) {
-    // Settings are available in the URL.
-    foreach ($cal->settings_list() as $name) {
+  if (isset($_GET['settings_are_for']) && $_GET['settings_are_for'] == $calendar->name) {
+    foreach ($calendar->settings_list() as $name) {
       if (isset($_GET[$name])) {
         $settings[$name] = $_GET[$name];
       } else {
@@ -109,29 +108,29 @@ function holidays_demo() {
     // extensive settings form, it serves as a nicer demonstration.
     $_GET['calendar'] = 'Jewish';
   }
-  if (!($cal = holidays_factory($_GET['calendar']))) {
+  if (!($calendar = holidays_factory($_GET['calendar']))) {
     drupal_set_message(t("Cannot create calendar of type '%s'", array('%s' => $_GET['calendar'])), 'error');
     return '';
   }
-  $cal->settings(_holidays_get_url_settings($cal));
+  $calendar->settings(_holidays_get_url_settings($calendar));
 
-  $today = $cal->get_todays_date_as_gregorian();
+  $today = $calendar->get_todays_date_as_gregorian();
   $year  = !empty($_GET['year'])  ? $_GET['year']  : $today['year'];
   $month = !empty($_GET['month']) ? $_GET['month'] : $today['mon'];
 
-  $output = drupal_get_form('holidays_calendar_selection_form', $cal);
+  $output = drupal_get_form('holidays_calendar_selection_form', $calendar);
 
-  $output .= '<div class="holidays-calendar ' . _holidays_calculate_dir($cal) . '">';
-  $output .= theme('holidays_navigation', $cal);
-  $output .= $cal->printCal($year, $month);
+  $output .= '<div class="holidays-calendar ' . _holidays_calculate_dir($calendar) . '">';
+  $output .= theme('holidays_navigation', $calendar);
+  $output .= $calendar->printCal($year, $month);
   $output .= '</div>';
 
   return $output;
 }
 
 // Figures out the directionality of the table.
-function  _holidays_calculate_dir($cal) {
-  if ($cal->is_rtl() && $cal->settings_get('language') == CAL_LANG_NATIVE) {
+function  _holidays_calculate_dir($calendar) {
+  if ($calendar->is_rtl() && $calendar->settings_get('language') == CAL_LANG_NATIVE) {
     return 'rtl';
   } else {
     return 'ltr';
