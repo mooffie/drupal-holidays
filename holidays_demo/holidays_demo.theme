@@ -36,8 +36,8 @@ function theme_holidays_navigation($cal) {
   $output .= _holidays_build_link(t('Next month'), $year, $month + 1, _holidays_forward_arrow($cal));
   $output .= "</div>"; // <!-- .navigator -->
 
-  $start_date_str = $cal->getLongDate(array('year'=>$year, 'mon'=>$month, 'mday'=>1));
-  $end_date_str   = $cal->getLongDate(array('year'=>$year, 'mon'=>$month, 'mday'=>cal_days_in_month(CAL_GREGORIAN, $month, $year)));
+  $start_date_str = $cal->getMediumDate(array('year'=>$year, 'mon'=>$month, 'mday'=>1));
+  $end_date_str   = $cal->getMediumDate(array('year'=>$year, 'mon'=>$month, 'mday'=>cal_days_in_month(CAL_GREGORIAN, $month, $year)));
 
   $output .= "<div class='calendar-range'>";
   $output .= "$start_date_str &#x2013; $end_date_str";
