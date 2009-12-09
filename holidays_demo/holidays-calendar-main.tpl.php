@@ -16,3 +16,4 @@
   <?php print theme('holidays_calendar_navigation', $calendar, $year, $month); ?>
   <?php print theme('holidays_calendar_month', $calendar, $year, $month); ?>
 </div>
+<p><?php print l(t('iCal feed'), _holidays_build_url('holidays/feed')); ?></p>

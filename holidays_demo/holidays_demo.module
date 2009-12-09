@@ -15,6 +15,12 @@ function holidays_demo_menu() {
     'page callback' => 'holidays_demo',
     'access arguments' => array('access content'),
   );
+  $items['holidays/feed'] = array(
+    'title' => 'Holidays module demonstration',
+    'page callback' => 'holidays_demo_ical_feed',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
   return $items;
 }
 
@@ -132,39 +138,60 @@ function _holidays_get_url_settings($cal) {
   return $settings;
 }
 
-// The main function.
-function holidays_demo() {
-  drupal_add_css(drupal_get_path('module', 'holidays_demo') . '/holidays_demo.css');
-
+/**
+ * Creates a calendar object based on the parameters in the URL.
+ * Additionally, figures out the year and month to show.
+ *
+ * @return
+ *   The tuple (calendar, year, month).
+ */
+function _holidays_demo_create_calendar_object() {
   if (empty($_GET['calendar'])) {
     // We use the Jewish calendar by default because, owing to its
     // extensive settings form, it serves as a nicer demonstration.
     $_GET['calendar'] = 'Jewish';
   }
-  if (!($cal = holidays_factory($_GET['calendar']))) {
+  if (!($calendar = holidays_factory($_GET['calendar']))) {
     drupal_set_message(t("Cannot create calendar of type '%s'", array('%s' => $_GET['calendar'])), 'error');
-    return '';
+    return array();
   }
-  $cal->settings(_holidays_get_url_settings($cal));
+  $calendar->settings(_holidays_get_url_settings($calendar));
 
-  $today = $cal->get_todays_date_as_gregorian();
+  $today = $calendar->get_todays_date_as_gregorian();
   $year  = !empty($_GET['year'])  ? $_GET['year']  : $today['year'];
   $month = !empty($_GET['month']) ? $_GET['month'] : $today['mon'];
 
-  if (!empty($_GET['feed'])) {
-    header('Content-Type: text/calendar; charset=utf-8');
-    header('Content-Disposition: attachment; filename="calendar.ics";');
-    print holidays_demo_ical_feed($cal, $year, $month);
-    exit();
+  return array($calendar, $year, $month);
+}
+
+/**
+ * Menu callback. Displays a calendar.
+ */
+function holidays_demo() {
+  list($calendar, $year, $month) = _holidays_demo_create_calendar_object();
+  if ($calendar) {
+    drupal_add_css(drupal_get_path('module', 'holidays_demo') . '/holidays_demo.css');
+    $settings_form = drupal_get_form('holidays_calendar_selection_form', $calendar, $year, $month);
+    return theme('holidays_calendar_main', $calendar, $year, $month, $settings_form);
   }
   else {
-    $settings_form = drupal_get_form('holidays_calendar_selection_form', $cal, $year, $month);
-    return theme('holidays_calendar_main', $cal, $year, $month, $settings_form);
+    drupal_not_found();
   }
 }
 
-// @todo: There's not yet a link that triggers this ical feed.
-function holidays_demo_ical_feed($cal, $year, $month, $years_count = 2 /* two years ahead */) {
+/**
+ * Menu callback. Displays a calendar, as a feed.
+ */
+function holidays_demo_ical_feed() {
+  list($calendar, $year, $month) = _holidays_demo_create_calendar_object();
+
+  header('Content-Type: text/calendar; charset=utf-8');
+  header('Content-Disposition: attachment; filename="calendar.ics"');
+  print holidays_demo_ical_feed_data($calendar, $year, $month);
+  exit();
+}
+
+function holidays_demo_ical_feed_data($cal, $year, $month, $years_count = 2 /* two years ahead */) {
   $output  = "BEGIN:VCALENDAR\nVERSION:2.0\n";
   $output .= 'X-WR-CALNAME:' . $cal->ical_title() . "\n";
   $jdc = gregoriantojd($month, 1, $year);
