@@ -101,7 +101,7 @@ function _holidays_get_url_settings($cal) {
 function holidays_demo() {
   global $year, $month;
 
-  drupal_add_css(drupal_get_path('module', 'holidays_demo') . '/holidays_demo.css');
+  drupal_add_css(drupal_get_path('module', 'holidays_demo') . '/holidays_demo--core.css');
   require_once drupal_get_path('module', 'holidays_demo') . '/holidays_demo.theme';
 
   if (empty($_GET['calendar'])) {
@@ -121,7 +121,7 @@ function holidays_demo() {
 
   $output = drupal_get_form('holidays_calendar_selection_form', $cal);
 
-  $output .= '<div class="calendar ' . _holidays_calculate_dir($cal) . '">';
+  $output .= '<div class="holidays-calendar ' . _holidays_calculate_dir($cal) . '">';
   $output .= theme('holidays_navigation', $cal);
   $output .= $cal->printCal($year, $month);
   $output .= '</div>';

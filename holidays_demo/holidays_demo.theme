@@ -9,8 +9,8 @@
 function theme_holidays_navigation($cal) {
   global $year, $month;
   
-  drupal_add_js (drupal_get_path('module', 'holidays_demo') . '/holidays_demo.theme.js');
-  drupal_add_css(drupal_get_path('module', 'holidays_demo') . '/holidays_demo.theme.css');
+  drupal_add_js (drupal_get_path('module', 'holidays_demo') . '/holidays_demo.js');
+  drupal_add_css(drupal_get_path('module', 'holidays_demo') . '/holidays_demo--extra.css');
   
   $output .= "<table class='navigator-table' align='center'><tr>";
 
