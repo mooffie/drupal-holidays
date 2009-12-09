@@ -170,7 +170,6 @@ function _holidays_demo_create_calendar_object() {
 function holidays_demo() {
   list($calendar, $year, $month) = _holidays_demo_create_calendar_object();
   if ($calendar) {
-    drupal_add_css(drupal_get_path('module', 'holidays_demo') . '/holidays_demo.css');
     $settings_form = drupal_get_form('holidays_calendar_selection_form', $calendar, $year, $month);
     return theme('holidays_calendar_main', $calendar, $year, $month, $settings_form);
   }

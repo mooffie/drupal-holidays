@@ -5,15 +5,15 @@
  * matter how you generally format the calendar.
  */
 
-.calendar.rtl {
+.holidays-calendar.rtl {
   direction: rtl;
 }
 
-.calendar.ltr {
+.holidays-calendar.ltr {
   direction: ltr;
 }
 
-table.calendar {
+table.holidays-calendar {
   border-collapse: collapse;
 }
 
@@ -35,10 +35,11 @@ td.day {
   background-color: #fff;
 }
 
-td.day-header {
+th.day-header {
   text-align: center;
   font-weight: bolder;
   font-size: smaller;
+  border: 0;
 }
 
 td.empty-day {
@@ -83,19 +84,19 @@ td.omer {
 
 /* Put the gregorian number 'farther' on the box. This depends
    on the directionality of the page. */
-.calendar.rtl .gregorian-number {
+.holidays-calendar.rtl .gregorian-number {
   float: left;
 }
-.calendar.rtl .native-number {
+.holidays-calendar.rtl .native-number {
 }
-.calendar.ltr .gregorian-number {
+.holidays-calendar.ltr .gregorian-number {
   float: right;
 }
-.calendar.ltr .native-number {
+.holidays-calendar.ltr .native-number {
 }
 
 /* Get rid of the thin line Drupal puts there */
-table.navigator-table tbody, table.calendar tbody {
+table.navigator-table tbody, table.holidays-calendar tbody {
   border-top: 0;
 }
 

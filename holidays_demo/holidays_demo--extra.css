@@ -6,7 +6,7 @@
  * to include this file in your own code.
  */
 
-table.calendar {
+table.holidays-calendar {
   margin-top: 1em;
   margin-left: auto;
   margin-right: auto;
@@ -36,14 +36,14 @@ table.calendar {
   margin: 0.5em;
 }
 
-a {
+/*a {
   color: #0000ee;
 }
 a:visited {
   color: #0000ee;
-}
+}*/
 
-.title {
+.navigator-table .title {
   font-family: serif;
   text-align: center;
   font-weight: bold;
@@ -61,16 +61,6 @@ a:visited {
   font-family: sans-serif;
 }
 
-pre {
-  padding: .8em;
-  background: #eee;
-  font-size: smaller;
-}
-
-.instructions p {
-  line-height: 130%;
-}
-
 @media print {
 
   body {
@@ -78,10 +68,10 @@ pre {
     font-family: serif;
   }
 
-  .navigator-today, .instructions, #preferences {
+  .navigator-today {
     display: none;
   }
-  
+
   select {
     font-family: serif;
   }

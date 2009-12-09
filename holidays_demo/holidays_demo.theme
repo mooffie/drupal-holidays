@@ -7,6 +7,15 @@
  */
 
 /**
+ * Process variables for holidays-calendar-main.tpl.php
+ */
+function template_preprocess_holidays_calendar_main(&$vars) {
+  drupal_add_css(drupal_get_path('module', 'holidays_demo') . '/holidays_demo--core.css');
+  drupal_add_css(drupal_get_path('module', 'holidays_demo') . '/holidays_demo--extra.css');
+  drupal_add_js (drupal_get_path('module', 'holidays_demo') . '/holidays_demo.js');
+}
+
+/**
  * Process variables for holidays-calendar-navigation.tpl.php
  *
  * The $vars array contains the following arguments:
@@ -15,8 +24,6 @@
  * - $month: The Gregorian month displayed.
  */
 function template_preprocess_holidays_calendar_navigation(&$vars) {
-  drupal_add_js (drupal_get_path('module', 'holidays_demo') . '/holidays_demo.theme.js');
-  drupal_add_css(drupal_get_path('module', 'holidays_demo') . '/holidays_demo.theme.css');
   $year  = $vars['year'];
   $month = $vars['month'];
   $vars['first_date_shown'] = array('year' => $year, 'mon' => $month, 'mday' => 1);

@@ -18,11 +18,11 @@
  * @see template_preprocess_holidays_calendar_month()
  */
 ?>
-<table class="calendar">
+<table class="holidays-calendar">
 
 <tr>
   <?php foreach ($day_names as $day): ?>
-    <td class="day-header"><?php print $day; ?></td>
+    <th class="day-header"><?php print $day; ?></td>
   <?php endforeach; ?>
 </tr>
 
