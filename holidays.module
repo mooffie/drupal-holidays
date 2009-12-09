@@ -108,7 +108,7 @@ function _holidays_decode_timestamp($timestamp) {
     'mon'  => $parts[1],
     'mday' => $parts[2],
     // Right now the calendar isn't using the following time fields, but in the
-    // future we may have a formatting function (a la getLongDate()) that prints it.
+    // future we may have a formatting function (getLongDate()?) that prints it.
     'hours'   => $parts[3],
     'minutes' => $parts[4],
     'seconds' => $parts[5],

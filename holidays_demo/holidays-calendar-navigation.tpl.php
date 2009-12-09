@@ -49,7 +49,7 @@ if (_holidays_calculate_directionality($calendar) == 'ltr') {
   </div>
 
   <div class="calendar-range">
-   <?php print $calendar->getLongDate($first_date_shown); ?> &#x2013; <?php print $calendar->getLongDate($last_date_shown); ?>
+   <?php print $calendar->getMediumDate($first_date_shown); ?> &#x2013; <?php print $calendar->getMediumDate($last_date_shown); ?>
   </div>
 </td>
 
