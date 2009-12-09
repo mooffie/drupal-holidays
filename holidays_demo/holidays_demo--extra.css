@@ -1,9 +1,8 @@
 /* $Id$
 
 /*
- * This file contains CSS definitions that are less essential than those in `holidays_demo.css'.
- * These are specific to the way `holidays_demo.theme' formats the calendar, and you shouldn't need
- * to include this file in your own code.
+ * This file contains CSS definitions that are less essential than those in "core".
+ * These are specific to the way our Drupal module formats the page around the month view.
  */
 
 table.holidays-calendar {
