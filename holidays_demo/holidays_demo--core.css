@@ -1,8 +1,8 @@
 /* $Id$ */
 
 /*
- * This file contains 'core' CSS definitions. You'd probably want to use these no
- * matter how you generally format the calendar.
+ * This file contains "core" CSS definitions. It is the minimum needed for
+ * the month view, and it is also compatible with the markup NativaCalendar::printCal() produces.
  */
 
 .holidays-calendar.rtl {
