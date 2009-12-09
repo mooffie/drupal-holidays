@@ -10,7 +10,6 @@
  * Process variables for holidays-calendar-main.tpl.php
  */
 function template_preprocess_holidays_calendar_main(&$vars) {
-  drupal_add_css(drupal_get_path('module', 'holidays_demo') . '/holidays_demo--core.css');
   drupal_add_css(drupal_get_path('module', 'holidays_demo') . '/holidays_demo--extra.css');
   drupal_add_js (drupal_get_path('module', 'holidays_demo') . '/holidays_demo.js');
 }
@@ -86,10 +85,6 @@ function _holidays_build_link($text, $year, $month, $img = NULL) {
 }
 
 /**
- * You should include the 'demo-core.css' style sheet in your page for a
- * pretty display.
- */
-/**
  * Process variables for holidays-calendar-month.tpl.php
  *
  * The $vars array contains the following arguments:
@@ -101,6 +96,8 @@ function template_preprocess_holidays_calendar_month(&$vars) {
   $calendar =& $vars['calendar'];
   $year     =  $vars['year'];
   $month    =  $vars['month'];
+
+  drupal_add_css(drupal_get_path('module', 'holidays_demo') . '/holidays_demo--core.css');
 
   $days_in_month = cal_days_in_month(CAL_GREGORIAN, $month, $year);
   $prev_dow      = 100; // Anything above 7.
