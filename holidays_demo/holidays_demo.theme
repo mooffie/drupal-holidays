@@ -44,28 +44,34 @@ function theme_holidays_month_selector($current_month) {
   return $output;
 }
 
-function _holidays_build_url($year, $month) {
-  $url = request_uri();
-  if ($month == 13) {
-    ++$year;
-    $month = 1;
+/**
+ * A wrapper around url() that allows us to easily specify GET parameters.
+ */
+function _holidays_build_url($path = NULL, $query = array()) {
+  if (isset($query['month'])) {
+    // We allow for "$month + 1" arithmetic in the templates and we
+    // now need to fix this up.
+    $month =& $query['month'];
+    $year  =& $query['year'];
+    if ($month == 13) {
+      ++$year;
+      $month = 1;
+    }
+    if ($month == 0) {
+      --$year;
+      $month = 12;
+    }
   }
-  if ($month == 0) {
-    --$year;
-    $month = 12;
+  $query += $_GET; // Add existing parameters.
+  unset($query['q']);
+  if (is_null($path)) {
+    $path = $_GET['q'];
   }
-  if (strstr($url, 'year=')) {
-    $url = preg_replace('/(?<=year=)(\d+)/', $year, $url);
-    $url = preg_replace('/(?<=month=)(\d+)/', $month, $url);
-  } else {
-    $url .= strstr($url, '?') ? '&' : '?';
-    $url .= "year=$year&month=$month";
-  }
-  return $url;
+  return url($path, array('query' => $query, 'absolute' => TRUE));
 }
 
 function _holidays_build_link($text, $year, $month, $img = NULL) {
-  $url = _holidays_build_url($year, $month);
+  $url = _holidays_build_url(NULL, array('year' => $year, 'month' => $month));
   if ($img) {
     $text = theme('image', drupal_get_path('module', 'holidays_demo') . '/' . $img, $text, $text);
   }
