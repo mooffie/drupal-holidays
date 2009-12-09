@@ -68,7 +68,7 @@ function holidays_demo_theme() {
 // Builds the selection and settings form. We want to allow people to link to
 // various months in the celendar so we make this a GET form. Since FAPI doesn't
 // process GET forms, we will have to so some chores ourselves later on.
-function holidays_calendar_selection_form(&$form_state, $cal, $year, $month) {
+function holidays_calendar_selection_form(&$form_state, $calendar, $year, $month) {
   $form['calendar-selection'] = array(
     '#type' => 'fieldset'
   );
@@ -76,13 +76,13 @@ function holidays_calendar_selection_form(&$form_state, $cal, $year, $month) {
     '#type' => 'select',
     '#title' => t('Select the calendar'),
     '#options' => holidays_get_calendars(),
-    '#default_value' => $cal->name,
+    '#default_value' => $calendar->name,
   );
   $form['calendar-selection']['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Update'),
   );
-  if ($cal && ($settings_form = $cal->settings_form())) {
+  if ($calendar && ($settings_form = $calendar->settings_form())) {
     $form['calendar-selection']['settings'] = $settings_form;
     $form['calendar-selection']['settings'] += array(
       '#type' => 'fieldset',
@@ -92,7 +92,7 @@ function holidays_calendar_selection_form(&$form_state, $cal, $year, $month) {
     );
     $form['calendar-selection']['settings_are_for'] = array(
       '#type' => 'hidden',
-      '#value' => $cal->name,
+      '#value' => $calendar->name,
     );
   }
   if (!variable_get('clean_url', '0')) {
@@ -122,11 +122,10 @@ function _holidays_form_process($form) {
 }
 
 // Extracts the chosen calendar's settings from the URL.
-function _holidays_get_url_settings($cal) {
+function _holidays_get_url_settings($calendar) {
   $settings = array();
-  if (isset($_GET['settings_are_for']) && $_GET['settings_are_for'] == $cal->name) {
-    // Settings are available in the URL.
-    foreach ($cal->settings_list() as $name) {
+  if (isset($_GET['settings_are_for']) && $_GET['settings_are_for'] == $calendar->name) {
+    foreach ($calendar->settings_list() as $name) {
       if (isset($_GET[$name])) {
         $settings[$name] = $_GET[$name];
       } else {
@@ -190,12 +189,12 @@ function holidays_demo_ical_feed() {
   exit();
 }
 
-function holidays_demo_ical_feed_data($cal, $year, $month, $years_count = 2 /* two years ahead */) {
+function holidays_demo_ical_feed_data($calendar, $year, $month, $years_count = 2 /* two years ahead */) {
   $output  = "BEGIN:VCALENDAR\nVERSION:2.0\n";
-  $output .= 'X-WR-CALNAME:' . $cal->ical_title() . "\n";
+  $output .= 'X-WR-CALNAME:' . $calendar->ical_title() . "\n";
   $jdc = gregoriantojd($month, 1, $year);
   for ($n = $years_count * 365; $n--; ) {
-    $holidays = $cal->getHolidays(array('jdc' => $jdc));
+    $holidays = $calendar->getHolidays(array('jdc' => $jdc));
     if ($holidays) {
       $gregorian = cal_from_jd($jdc, CAL_GREGORIAN);
       $gregorian_str = sprintf('%04d%02d%02d',

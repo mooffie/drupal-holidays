@@ -51,6 +51,13 @@ function holidays_help($section) {
   }
 }
 
+/**
+ * Returns a calendar object.
+ *
+ * Note that the objects are cached, so if you want to change settings of a
+ * returned object, clone it first to prevent affecting the cached object.
+ * Example: <code>$cal = holidays_factory('Jewish')->copy()->settings(...);</code>
+ */
 function holidays_factory($calendar_name, $settings = array()) {
   static $cache = array();
   global $locale;
@@ -60,28 +67,31 @@ function holidays_factory($calendar_name, $settings = array()) {
   }
   else {
     require_once dirname(__FILE__) . '/lib/NativeCalendar.php';
-    if (($cal = NativeCalendar::factory($calendar_name))) {
-      $cal->settings(_holidays_default_settings($calendar_name));
-      $cal->settings($settings);
-      $cal->set_timestamp_decoding_function('_holidays_decode_timestamp');
+    if (($calendar = NativeCalendar::factory($calendar_name))) {
+      $calendar->settings(_holidays_default_settings($calendar_name));
+      $calendar->settings($settings);
+      $calendar->set_timestamp_decoding_function('_holidays_decode_timestamp');
       // If we're to use the website's language, and this language happens to
       // be the same as the calendar's native language, we instruct the calendar
       // to use its built-in support for this [native] language.
       //
       // E.g., when we're running Drupal in the Hebrew locale, we want the
       // Jewish calendar to use its built-in Hebrew support.
-      if ($cal->settings_get('language') == CAL_LANG_FOREIGN && $locale == key($cal->native_language())) {
-        $cal->settings(array('language' => CAL_LANG_NATIVE));
+      if ($calendar->settings_get('language') == CAL_LANG_FOREIGN && $locale == key($calendar->native_language())) {
+        $calendar->settings(array('language' => CAL_LANG_NATIVE));
       }
       // We cache this object only if no customizations were supplied.
       if (!$settings) {
-        $cache[$calendar_name] = $cal;
+        $cache[$calendar_name] = $calendar;
       }
-      return $cal;
+      return $calendar;
     }
   }
 }
 
+/**
+ * Returns a list of all the installed calendars.
+ */
 function holidays_get_calendars() {
   require_once dirname(__FILE__) . '/lib/NativeCalendar.php';
   return NativeCalendar::factory_list();
