@@ -2,4 +2,4 @@
 name = Holidays Demonstration
 description = "Prints a wall calendar at the ?q=holidays URL."
 dependencies[] = holidays
-core = 6.x
+core = 7.x

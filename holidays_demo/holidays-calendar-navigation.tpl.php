@@ -38,13 +38,13 @@ if (_holidays_calculate_directionality($calendar) == 'ltr') {
 <td>
   <div class="navigator">
     <?php print _holidays_build_link(t('Previous year'), $year - 1, $month, $backward_arrow); ?>
-    <?php print theme('holidays_year_selector', $year); ?>
+    <?php print theme('holidays_year_selector', array('current_year' => $year)); ?>
     <?php print _holidays_build_link(t('Next year'), $year + 1, $month, $forward_arrow); ?>
   </div>
 
   <div class="navigator">
     <?php print _holidays_build_link(t('Previous month'), $year, $month - 1, $backward_arrow); ?>
-    <?php print theme('holidays_month_selector', $month); ?>
+    <?php print theme('holidays_month_selector', array('current_month' => $month)); ?>
     <?php print _holidays_build_link(t('Next month'), $year, $month + 1, $forward_arrow); ?>
   </div>
 

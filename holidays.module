@@ -7,47 +7,55 @@
  */
 
 /**
- * Implementation of hook_menu().
+ * Implements hook_menu().
  */
 function holidays_menu() {
-  $items['admin/settings/holidays'] = array(
+  $items['admin/config/regional/holidays'] = array(
     'file' => 'holidays.admin.inc',
     'title' => 'Calendaring systems',
     'page callback' => 'holidays_admin_overview',
     'access arguments' => array('administer holidays'),
+    'type' => MENU_NORMAL_ITEM,
   );
-  $items['admin/settings/holidays/%holidays_calendar'] = array(
+  $items['admin/config/regional/holidays/%holidays_calendar'] = array(
     'file' => 'holidays.admin.inc',
     'title' => 'Calendaring systems',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('holidays_admin_calendar_form', 3),
+    'page arguments' => array('holidays_admin_calendar_form', 4),
     'access arguments' => array('administer holidays'),
     'type' => MENU_CALLBACK,
   );
   return $items;
 }
 
-// A loading handler for a %holidays_calendar menu argument.
+/**
+ * A loading handler for a %holidays_calendar menu argument.
+ */
 function holidays_calendar_load($calendar_name) {
   return holidays_factory($calendar_name);
 }
 
 /**
- * Implementation of hook_perm().
+ * Implements hook_permission().
  */
-function holidays_perm() {
-  return array('administer holidays');
+function holidays_permission() {
+  return array(
+    'administer holidays' => array(
+      'title' => t('Administer holidays'),
+      'description' => t('Adjust the default settings for the installed calendar systems.'),
+    ),
+  );
 }
 
 /**
- * Implementation of hook_help().
+ * Implements hook_help().
  */
 function holidays_help($section) {
   switch ($section) {
-    case 'admin/settings/holidays':
+    case 'admin/config/regional/holidays':
       return '<p>' . t('The following calendars are installed on your system. Each calendar can be configured separately to suit your needs.') . '</p>';
-    case 'admin/settings/holidays/%':
-      return '<p>' . t('You may edit the default settings for this calendar. When using the <a href="@api-page">calendaring API</a> directly (via PHP coding) any of these settings may be overridden, but these defaults serve as the base.', array('@api-page' => 'http://drupal.org/node/XXXXX')) . '</p>';
+    case 'admin/config/regional/holidays/%':
+      return '<p>' . t('You may edit the default settings for this calendar. When using the <a href="@api-page">calendaring API</a> directly (via PHP coding) any of these settings may be overridden, but these defaults serve as the base.', array('@api-page' => 'https://drupal.org/project/holidays')) . '</p>';
   }
 }
 
@@ -67,6 +75,7 @@ function holidays_factory($calendar_name, $settings = array()) {
   }
   else {
     require_once dirname(__FILE__) . '/lib/NativeCalendar.php';
+    //require_once(DRUPAL_ROOT . drupal_get_path('module', 'drupal-holidays-master') . '/lib/NativeCalendar.php');
     if (($calendar = NativeCalendar::factory($calendar_name))) {
       $calendar->settings(_holidays_default_settings($calendar_name));
       $calendar->settings($settings);
@@ -94,6 +103,7 @@ function holidays_factory($calendar_name, $settings = array()) {
  */
 function holidays_get_calendars() {
   require_once dirname(__FILE__) . '/lib/NativeCalendar.php';
+  //require_once(DRUPAL_ROOT . '/' . drupal_get_path('module', 'drupal-holidays-master') . '/lib/NativeCalendar.php');
   return NativeCalendar::factory_list();
 }
 
@@ -112,14 +122,14 @@ function _holidays_decode_timestamp($timestamp) {
   // makes our code "forward-compatible" (think D7's timezones). Last but not 
   // least: PHP's date handling functions would still require us to juggle with 
   // strings.
-  $parts = split('-', format_date($timestamp, 'custom', 'Y-m-d-H-i-s'));
+  $parts = preg_split('/[: -]/', format_date($timestamp, 'custom', 'Y-m-d-H-i-s'));
   return array(
     'year' => $parts[0],
-    'mon'  => $parts[1],
+    'mon' => $parts[1],
     'mday' => $parts[2],
     // Right now the calendar isn't using the following time fields, but in the
     // future we may have a formatting function (getLongDate()?) that prints it.
-    'hours'   => $parts[3],
+    'hours' => $parts[3],
     'minutes' => $parts[4],
     'seconds' => $parts[5],
   );

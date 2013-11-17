@@ -30,7 +30,8 @@ function template_preprocess_holidays_calendar_navigation(&$vars) {
   $vars['today'] = $vars['calendar']->get_todays_date_as_gregorian();
 }
 
-function theme_holidays_year_selector($current_year) {
+function theme_holidays_year_selector(&$vars) {
+  $current_year = $vars['current_year'];
   $output = '<select id="year-selector">';
   foreach (range($current_year - 70, $current_year + 70) as $y) {
     $selected = ($y == $current_year) ? 'selected' : '';
@@ -40,7 +41,8 @@ function theme_holidays_year_selector($current_year) {
   return $output;
 }
 
-function theme_holidays_month_selector($current_month) {
+function theme_holidays_month_selector(&$vars) {
+  $current_month = $vars['current_month'];
   $output = '<select id="month-selector">';
   foreach (range(1, 12) as $m) {
     $selected = ($m == $current_month) ? 'selected' : '';
@@ -79,7 +81,7 @@ function _holidays_build_url($path = NULL, $query = array()) {
 function _holidays_build_link($text, $year, $month, $img = NULL) {
   $url = _holidays_build_url(NULL, array('year' => $year, 'month' => $month));
   if ($img) {
-    $text = theme('image', drupal_get_path('module', 'holidays_demo') . '/' . $img, $text, $text);
+    $text = theme('image', array('path' => drupal_get_path('module', 'holidays_demo') . '/' . $img, 'title' => $text, 'alt' => $text));
   }
   return "<a href='$url'>$text</a>";
 }
@@ -126,7 +128,7 @@ function template_preprocess_holidays_calendar_month(&$vars) {
         }
       }
     }
-    $row[] = theme('holidays_calendar_day', $calendar, $jdc);
+    $row[] = theme('holidays_calendar_day', array('calendar' => $calendar, 'jdc' => $jdc));
     $prev_dow = $dow;
   }
   for ($i = $dow + 1; $i <= 7; $i++) {

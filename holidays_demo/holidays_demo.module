@@ -7,13 +7,14 @@
  */
 
 /**
- * Implementation of hook_menu().
+ * Implements hook_menu().
  */
 function holidays_demo_menu() {
   $items['holidays'] = array(
     'title' => 'Holidays module demonstration',
     'page callback' => 'holidays_demo',
     'access arguments' => array('access content'),
+    'type' => MENU_NORMAL_ITEM,
   );
   $items['holidays/feed'] = array(
     'title' => 'Holidays module demonstration',
@@ -25,42 +26,42 @@ function holidays_demo_menu() {
 }
 
 /**
- * Implementation of hook_theme().
+ * Implements hook_theme().
  */
 function holidays_demo_theme() {
   return array(
     'holidays_calendar_main' => array(
       'file' => 'holidays_demo.theme',
       'template' => 'holidays-calendar-main',
-      'arguments' => array('calendar' => NULL, 'year' => NULL, 'month' => NULL, 'settings_form' => NULL),
+      'variables' => array('calendar' => NULL, 'year' => NULL, 'month' => NULL, 'settings_form' => NULL),
     ),
     'holidays_calendar_navigation' => array(
       'file' => 'holidays_demo.theme',
       'template' => 'holidays-calendar-navigation',
-      'arguments' => array('calendar' => NULL, 'year' => NULL, 'month' => NULL),
+      'variables' => array('calendar' => NULL, 'year' => NULL, 'month' => NULL),
     ),
     'holidays_calendar_month' => array(
       'file' => 'holidays_demo.theme',
       'template' => 'holidays-calendar-month',
-      'arguments' => array('calendar' => NULL, 'year' => NULL, 'month' => NULL),
+      'variables' => array('calendar' => NULL, 'year' => NULL, 'month' => NULL),
     ),
     'holidays_calendar_day' => array(
       'file' => 'holidays_demo.theme',
       'template' => 'holidays-calendar-day',
-      'arguments' => array('calendar' => NULL, 'jdc' => NULL),
+      'variables' => array('calendar' => NULL, 'jdc' => NULL),
     ),
     'holidays_calendar_day_void' => array(
       'file' => 'holidays_demo.theme',
       'template' => 'holidays-calendar-day-void',
-      'arguments' => array(),
+      'variables' => array(),
     ),
     'holidays_year_selector' => array(
       'file' => 'holidays_demo.theme',
-      'arguments' => array('current_year' => NULL),
+      'variables' => array('current_year' => NULL),
     ),
     'holidays_month_selector' => array(
       'file' => 'holidays_demo.theme',
-      'arguments' => array('current_month' => NULL),
+      'variables' => array('current_month' => NULL),
     ),
   );
 }
@@ -68,7 +69,7 @@ function holidays_demo_theme() {
 // Builds the selection and settings form. We want to allow people to link to
 // various months in the celendar so we make this a GET form. Since FAPI doesn't
 // process GET forms, we will have to so some chores ourselves later on.
-function holidays_calendar_selection_form(&$form_state, $calendar, $year, $month) {
+function holidays_calendar_selection_form($form, &$form_state, $calendar, $year, $month) {
   $form['calendar-selection'] = array(
     '#type' => 'fieldset'
   );
@@ -110,14 +111,15 @@ function holidays_calendar_selection_form(&$form_state, $calendar, $year, $month
     '#value' => $month,
   );
   $form['#method'] = 'GET';
-  $form['#process'] = array('_holidays_form_process' => array());
+  $form['#process'] = array('_holidays_form_process');
   return $form;
 }
 
-// Makes the URL more aesthetic by removing some interval FAPI variables.
+// Makes the URL more aesthetic by removing some interim FAPI variables.
 function _holidays_form_process($form) {
   unset($form['form_id']);
   unset($form['form_token']);
+  unset($form['form_build_id']);
   return $form;
 }
 
@@ -170,7 +172,7 @@ function holidays_demo() {
   list($calendar, $year, $month) = _holidays_demo_create_calendar_object();
   if ($calendar) {
     $settings_form = drupal_get_form('holidays_calendar_selection_form', $calendar, $year, $month);
-    return theme('holidays_calendar_main', $calendar, $year, $month, $settings_form);
+    return theme('holidays_calendar_main', array('calendar' => $calendar, 'year' => $year, 'month' => $month, 'settings_form' => $settings_form));
   }
   else {
     drupal_not_found();
@@ -178,7 +180,7 @@ function holidays_demo() {
 }
 
 /**
- * Menu callback. Displays a calendar, as a feed.
+ * Menu callback. Displays a calendar, as an iCal feed.
  */
 function holidays_demo_ical_feed() {
   list($calendar, $year, $month) = _holidays_demo_create_calendar_object();
