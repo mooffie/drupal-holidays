@@ -5,11 +5,23 @@ systems. E.g., use this module if you want to print Hebrew dates (and
 holidays).
 
 This module primarily provides API. Therefore it has scant user interface.
-For usage instructions and examples, see:
 
-- The 'API.txt' in the lib/ folder.
+INSTALLATION
+------------
 
-- The handbook page, at http://drupal.org/node/XXXXXX
+Get the "engine", from https://github.com/mooffie/holidays , and copy
+its 'lib' folder here.
 
-Enable the 'holidays_demo' module to see this module put to some use. You'll
+The API
+-------
+
+The API is documented in the "engine".
+
+When using Drupal, use `holidays_factory(calendar_name)` instead of
+`NativeCalendar::factory(calendar_name)`.
+
+DEMONSTRATION
+-------------
+
+Enable the 'holidays_demo' sub-module to see this module put to some use. You'll
 find a new menu item, pointing to ?q=holidays, which will print a nice calendar.
